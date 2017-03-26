@@ -491,13 +491,14 @@ public class AsciidoctorMojo extends AbstractMojo {
         for (Map.Entry<String, Object> attributeEntry : attributes.entrySet()) {
             Object val = attributeEntry.getValue();
             // NOTE Maven interprets an empty value as null, so we need to explicitly convert it to empty string (see #36)
-            // NOTE In Asciidoctor, an empty string represents a true value
-            if (val == null || "true".equals(val)) {
+            if (val == null) {
                 attributesBuilder.attribute(attributeEntry.getKey(), "");
             }
-            // NOTE a value of false is effectively the same as a null value, so recommend the use of the string "false"
+            else if ("true".equals(val)) {
+                attributesBuilder.attribute(attributeEntry.getKey(), "true");
+            }
             else if ("false".equals(val)) {
-                attributesBuilder.attribute(attributeEntry.getKey(), null);
+                attributesBuilder.attribute(attributeEntry.getKey(), "false");
             }
             // NOTE Maven can't assign a Boolean value from the XML-based configuration, but a client may
             else if (val instanceof Boolean) {
